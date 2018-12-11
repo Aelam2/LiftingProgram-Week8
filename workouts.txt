@@ -1,0 +1,12 @@
+
+Workout Title:Day1
+Squat: 12 12 12
+Bench: 8 9 10
+Dips: 5 5 5 5
+end
+Workout Title:Day2
+Bench: 8 9 10
+end
+Workout Title:Day3
+Deadlift: 12 13 14
+end

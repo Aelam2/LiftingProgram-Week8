@@ -1,19 +1,17 @@
 
-class Workout:
-    def __init__(self, workoutTitle):
-        self.workoutTitle = workoutTitle
-
-    def getWorkoutTitle(self):
-        return self.workoutTitle
-
 #This is complete
 #Possbile clean up code with Array of weights to choose from
 #Finds which plates should be added to the bar
+from pythonds import Queue
+
+
 def optimalPlates(desiredWeight, weightsOnBar):
     if desiredWeight == 0: #Base case
         return weightsOnBar
     elif (desiredWeight % 5) != 0: #Desired weight must be % 5 or there will be balance issues
+        clearScreen()
         print('Weight must be an increment of 5')
+        calculateWeight()
         return False
     elif ((desiredWeight >= 90)): #We should always add a 45 to the bar until we get to smaller increments
         newWeight = desiredWeight - 90 #Adding a 45 means that 45 lbs is added to both SIDES which means 90 lb total
@@ -40,6 +38,7 @@ def optimalPlates(desiredWeight, weightsOnBar):
 #Mainly cleans up the array from the optimal weight method
 #Counts how many times a plate is used and displays the data differently
 def calculateWeight():
+    clearScreen()
     # Subtract 45 from desired weight because the actual bar weighs 45 lb
     weightsOnBar = optimalPlates(int(input('Enter Desired Weight: ')) - 45, [])
 
@@ -64,8 +63,6 @@ def calculateWeight():
 
 
 def newWorkout():
-    for n in range(10):
-        print('')
 
     #Instructions
     print("Enter the name of the exercise, total sets, and reps per set")
@@ -73,30 +70,81 @@ def newWorkout():
     print("This routine will be available when you start a workout(3)")
     print("Type 'save' after you have entered your entire routine")
     print("")
-
     workoutTitle = input("Workout Title: ")
-    Workout(workoutTitle)
 
     programStatus = True
-    numOfExercises = 1
+
+    #if workouts.txt doesn't exist
+        #create workouts.txt
+
+    workoutObject = open("workouts.txt", "a")
+    workoutObject.write("\nWorkout Title:" + workoutTitle)
 
     while programStatus == True:
-        exercise = input("Exercise " + str(numOfExercises) + ": ")
-        if exercise.lower() == "save":
-            return workoutTitle
-        numOfSets = int(input("total sets: "))
+        currentExercise = input("Enter new Exercise or Reps:")
+        if currentExercise.lower() == "save":
+            workoutObject.write("\nend")
+            workoutObject.close()
+            return
+        if currentExercise.replace(" ", "").isalpha() == True:
+            workoutObject.write("\n"+currentExercise+":")
+        if currentExercise.isnumeric() == True:
+            workoutObject.write(" " + currentExercise)
 
-        for n in range(numOfSets):
-            reps = input("Set " + str(n + 1) + " reps: ")
+def clearScreen():
+    for n in range(15):
+        print('')
 
-        numOfExercises += 1
+def createWorkoutDictionary():
+    allWorkoutsFile = open("workouts.txt", "r")
+    read = allWorkoutsFile.readlines()
 
-def startWorkout(allWorkouts):
-    print("Select a Workout: ")
+    allWorkouts = {}
+    readWorkout = False
+    exercises = []
+
+    for lines in read:
+        if ("Workout Title:" in lines) == True:
+            currentWorkout = lines.replace('\n', "").replace(' ', "").split(':', 1)[1]
+            readWorkout = True
+            continue
+        elif ("end" in lines) == True:
+            allWorkouts[currentWorkout] = exercises
+            exercises = []
+            readWorkout = False
+        if readWorkout == True:
+            exercises.append(lines.replace("\n",""))
+
+    allWorkoutsFile.close()
+    return allWorkouts
+
+def workoutQueue(workoutSelection):
+    clearScreen()
+    q = Queue()
+
+    print("Workout Overview")
+    for exercises in workoutSelection:
+        print(exercises)
+
+
+
+def startWorkout():
+    clearScreen()
+    allWorkouts = createWorkoutDictionary()
+    print(allWorkouts)
+
     for workouts in allWorkouts:
         print(workouts)
-    selectedWorkout = input("Enter Option: ")
-    print()
+
+    workoutSelection = input("Enter Workout Name to Start:")
+
+    if workoutSelection in allWorkouts:
+        workoutQueue(allWorkouts[workoutSelection])
+    else:
+        print("Invalid workout selection. ")
+        startWorkout()
+
+    input("")
 
 
 def viewWorkout():
@@ -126,7 +174,7 @@ def main():
         if programChoice == '2':
             allWorkouts.append(newWorkout())
         if programChoice == '3':
-            startWorkout(allWorkouts)
+            startWorkout()
         if programChoice == '4':
             viewWorkout()
         if programChoice == '5':
