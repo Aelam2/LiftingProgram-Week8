@@ -1,10 +1,7 @@
 
-Workout Title:Day1
-Bench: 5 5 5
-Squat: 55 5 5
+Workout Title:Upper bod
+bench: 12 12 12
 end
-Workout Title:Day2
-OHP: 5 5 5
-Squat: 5 5 5
-Curls: 15 15 15
+Workout Title:lower bod
+squat: 12 12
 end
